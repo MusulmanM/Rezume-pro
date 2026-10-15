@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static portfolio_tags %}
+
+{% block title %}{% if profile %}{{ profile.site_name }} — {{ profile.full_name }} | {{ profile.role }}{% else %}My Rezume{% endif %}{% endblock %}
+
+{% block meta %}
+{% if profile %}
+  {% tr profile "meta_description" as meta_description %}
+  <meta name="description" content="{{ meta_description|default:profile.role }}">
+  <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  {% for code, url in alternate_urls.items %}
+  <link rel="alternate" hreflang="{{ code }}" href="{{ request.scheme }}://{{ request.get_host }}{{ url }}">
+  {% endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ request.scheme }}://{{ request.get_host }}{{ alternate_urls.ru }}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ profile.full_name }} — {{ profile.role }}">
+  <meta property="og:description" content="{{ meta_description }}">
+  <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+  <meta property="og:locale" content="{% if lang == 'uz' %}uz_UZ{% else %}ru_RU{% endif %}">
+  {% if profile.hero_poster %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ profile.hero_poster.url }}">{% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{{ json_ld|safe }}</script>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+{% if not profile %}
+  <main id="main" class="setup-notice">
+    <div class="container">
+      <p class="eyebrow">SETUP</p>
+      <h1 class="h2">Portfolio hali sozlanmagan</h1>
+      <p class="lead">Serverda <code>python manage.py seed_portfolio</code> buyrug‘ini ishga tushiring yoki admin paneldan profil yarating.</p>
+    </div>
+  </main>
+{% else %}
+  {% include "portfolio/partials/header.html" %}
+
+  <main id="main">
+    {% include "portfolio/partials/hero.html" %}
+    {% include "portfolio/partials/marquee.html" %}
+    {% include "portfolio/partials/about.html" %}
+    {% include "portfolio/partials/skills.html" %}
+    {% include "portfolio/partials/projects.html" %}
+    {% include "portfolio/partials/architecture.html" %}
+    {% if timeline %}{% include "portfolio/partials/experience.html" %}{% endif %}
+    {% include "portfolio/partials/contacts.html" %}
+  </main>
+
+  {% include "portfolio/partials/footer.html" %}
+  {% include "portfolio/partials/project_modals.html" %}
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    {% icon "check" 16 %}<span class="toast__text"></span>
+  </div>
+  <button type="button" class="to-top" id="to-top" aria-label="{{ t.footer.back_to_top }}" hidden>{% icon "arrow-up" 18 %}</button>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if profile %}<script src="{% static 'js/main.js' %}" defer></script>{% endif %}
+{% endblock %}

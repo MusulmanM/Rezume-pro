@@ -1,0 +1,49 @@
+{% load portfolio_tags %}
+<section class="section section--alt" id="architecture" data-section>
+  <div class="container">
+    {% include "portfolio/partials/section_head.html" with number=section_numbers.architecture label=t.architecture.label title=t.architecture.title subtitle=t.architecture.subtitle %}
+
+    <div class="arch">
+      <div class="pipeline" role="tablist" aria-label="{{ t.architecture.flow }}" aria-orientation="vertical" data-reveal>
+        <p class="pipeline__label mono">{{ t.architecture.flow }} ↓</p>
+        <span class="pipeline__rail" aria-hidden="true"><span class="pipeline__pulse"></span></span>
+        {% for layer in layers %}
+        <button type="button" class="layer{% if forloop.first %} is-active{% endif %}" role="tab" id="layer-tab-{{ layer.key }}" aria-controls="layer-panel-{{ layer.key }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" tabindex="{% if forloop.first %}0{% else %}-1{% endif %}" data-layer="{{ layer.key }}">
+          <span class="layer__node">{% icon layer.icon 16 %}</span>
+          <span class="layer__text">
+            <span class="layer__name">{{ layer.name }}</span>
+            <span class="layer__tech">{{ layer.tech }}</span>
+          </span>
+          <span class="layer__step mono">{{ forloop.counter|stringformat:"02d" }}</span>
+        </button>
+        {% endfor %}
+      </div>
+
+      <div class="layer-panels" data-reveal>
+        {% for layer in layers %}
+        <article class="layer-panel card" role="tabpanel" id="layer-panel-{{ layer.key }}" aria-labelledby="layer-tab-{{ layer.key }}" {% if not forloop.first %}hidden{% endif %}>
+          <div class="layer-panel__icon">{% icon layer.icon 28 %}</div>
+          <p class="layer-panel__step mono">{{ forloop.counter|stringformat:"02d" }} / {{ layers|length|stringformat:"02d" }}</p>
+          <h3 class="layer-panel__title">{{ layer.name }}</h3>
+          <p class="layer-panel__tech mono">{{ layer.tech }}</p>
+          <p class="layer-panel__desc">{{ layer.desc }}</p>
+          <div class="layer-panel__progress" aria-hidden="true">
+            {% for other in layers %}<span{% if forloop.counter <= forloop.parentloop.counter %} class="is-done"{% endif %}></span>{% endfor %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+
+    <h3 class="subhead" data-reveal>{{ t.architecture.principles_title }}</h3>
+    <div class="principles">
+      {% for item in principles %}
+      <div class="principle card card--interactive" data-reveal style="--reveal-delay: {{ forloop.counter0 }}">
+        <span class="icon-tile">{% icon item.icon 18 %}</span>
+        <h4 class="principle__title">{{ item.title }}</h4>
+        <p class="principle__desc">{{ item.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

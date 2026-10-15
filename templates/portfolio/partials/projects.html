@@ -1,0 +1,54 @@
+{% load portfolio_tags %}
+<section class="section" id="projects" data-section>
+  <div class="container">
+    {% include "portfolio/partials/section_head.html" with number=section_numbers.projects label=t.projects.label title=t.projects.title subtitle=t.projects.subtitle %}
+
+    {% if projects %}
+    <div class="projects-grid">
+      {% for project in projects %}
+      <article class="project-card card card--interactive accent-{{ project.accent }}" data-reveal style="--reveal-delay: {{ forloop.counter0|divisibleby:2|yesno:'0,1' }}">
+        <button type="button" class="project-card__media" data-open-dialog="project-{{ project.slug }}" aria-label="{{ t.projects.inspect }}: {{ project.title }}">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" alt="" loading="lazy" decoding="async" width="1600" height="1000">
+          {% else %}
+          <span class="project-card__placeholder">{% icon "terminal" 36 %}<span>{{ project.title }}</span></span>
+          {% endif %}
+          <span class="project-card__scrim" aria-hidden="true"></span>
+          <span class="project-card__overlay">
+            {% if project.metrics %}<span class="project-card__metrics">{{ project.metrics }}</span>{% endif %}
+            {% if project.year %}<span class="project-card__year">{{ project.year }}</span>{% endif %}
+          </span>
+        </button>
+
+        <div class="project-card__body">
+          <p class="project-card__kicker">{{ forloop.counter|stringformat:"02d" }} · {% tr project "subtitle" %}</p>
+          <h3 class="project-card__title">
+            <button type="button" data-open-dialog="project-{{ project.slug }}">{{ project.title }}</button>
+          </h3>
+          <p class="project-card__desc">{% tr project "description" %}</p>
+          {% if project.tag_list %}
+          <ul class="tag-line" aria-label="Stack">
+            {% for tag in project.tag_list %}<li>{{ tag }}</li>{% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+
+        <div class="project-card__footer">
+          <div class="project-card__links">
+            {% if project.github_url %}
+            <a href="{{ project.github_url }}" class="btn btn--ghost btn--sm" target="_blank" rel="noopener noreferrer">{% icon "github" 14 %} {{ t.projects.github }}</a>
+            {% endif %}
+            {% if project.demo_url %}
+            <a href="{{ project.demo_url }}" class="btn btn--soft btn--sm" target="_blank" rel="noopener noreferrer">{% icon "external-link" 14 %} {{ t.projects.demo }}</a>
+            {% endif %}
+          </div>
+          <button type="button" class="link-btn" data-open-dialog="project-{{ project.slug }}">{{ t.projects.inspect }} {% icon "arrow-right" 14 %}</button>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">{{ t.projects.empty }}</p>
+    {% endif %}
+  </div>
+</section>

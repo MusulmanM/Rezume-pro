@@ -1,0 +1,42 @@
+{% load portfolio_tags %}
+<header class="site-header" id="site-header">
+  <div class="container site-header__inner">
+    <a href="#top" class="brand" aria-label="{{ profile.site_name }} — {{ profile.full_name }}">
+      <span class="brand__mark">{{ profile.logo_short }}</span>
+      <span class="brand__name">{{ profile.site_name }}</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <a href="#about" data-nav="about">{{ t.nav.about }}</a>
+      <a href="#skills" data-nav="skills">{{ t.nav.skills }}</a>
+      <a href="#projects" data-nav="projects">{{ t.nav.projects }}</a>
+      <a href="#architecture" data-nav="architecture">{{ t.nav.architecture }}</a>
+      {% if timeline %}<a href="#experience" data-nav="experience">{{ t.nav.experience }}</a>{% endif %}
+      <a href="#contacts" data-nav="contacts">{{ t.nav.contacts }}</a>
+    </nav>
+
+    <div class="site-header__actions">
+      <div class="lang-switch" role="group" aria-label="{{ t.nav.language }}">
+        <a href="{{ alternate_urls.ru }}" hreflang="ru" lang="ru" data-lang-link {% if lang == 'ru' %}class="is-active" aria-current="true"{% endif %}>RU</a>
+        <a href="{{ alternate_urls.uz }}" hreflang="uz" lang="uz" data-lang-link {% if lang == 'uz' %}class="is-active" aria-current="true"{% endif %}>UZ</a>
+      </div>
+      <a href="#contacts" class="btn btn--primary btn--sm site-header__cta">{{ t.nav.cta }}</a>
+      <button type="button" class="burger" id="burger" aria-expanded="false" aria-controls="mobile-nav" aria-label="{{ t.nav.menu }}">
+        <span class="burger__open">{% icon "menu" 20 %}</span>
+        <span class="burger__close">{% icon "x" 20 %}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav" hidden>
+    <nav class="container mobile-nav__inner" aria-label="Mobile">
+      <a href="#about">{{ t.nav.about }}</a>
+      <a href="#skills">{{ t.nav.skills }}</a>
+      <a href="#projects">{{ t.nav.projects }}</a>
+      <a href="#architecture">{{ t.nav.architecture }}</a>
+      {% if timeline %}<a href="#experience">{{ t.nav.experience }}</a>{% endif %}
+      <a href="#contacts">{{ t.nav.contacts }}</a>
+      <a href="#contacts" class="btn btn--primary">{{ t.nav.cta }}</a>
+    </nav>
+  </div>
+</header>

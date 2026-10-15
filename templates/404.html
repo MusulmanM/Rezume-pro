@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}404 — {{ t.errors.404_title }}{% endblock %}
+{% block body_class %}error-page{% endblock %}
+{% block body %}
+<main id="main" class="error-screen">
+  <div class="error-screen__card">
+    <p class="error-screen__code mono">HTTP 404</p>
+    <h1 class="error-screen__title">{{ t.errors.404_title }}</h1>
+    <pre class="code error-screen__trace"><code><span class="k">raise</span> <span class="ne">Http404</span>(<span class="s2">"{{ request.path|truncatechars:48 }}"</span>)</code></pre>
+    <p class="error-screen__text">{{ t.errors.404_text }}</p>
+    <a href="{{ home }}" class="btn btn--primary">{{ t.errors.home }}</a>
+  </div>
+</main>
+{% endblock %}

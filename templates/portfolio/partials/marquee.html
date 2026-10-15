@@ -1,0 +1,11 @@
+{% if skills %}
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    {% for _ in "12" %}
+    <div class="marquee__group">
+      {% for skill in skills %}<span>{{ skill.name }}</span><span class="marquee__dot{% if forloop.counter|divisibleby:2 %} marquee__dot--alt{% endif %}">◆</span>{% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

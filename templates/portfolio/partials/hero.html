@@ -1,0 +1,109 @@
+{% load portfolio_tags %}
+<section class="hero" id="top">
+  <div class="container">
+    <div class="hero__grid">
+      <div class="hero__content">
+        <div class="hero__kicker" data-reveal>
+          {% if profile.is_available %}
+          <span class="status-pill"><span class="status-pill__dot"></span>{% tr profile "availability" %}</span>
+          {% endif %}
+          <span class="hero__meta">{% tr profile "city" %}{% if profile.age %} · {{ profile.age }} {{ t.hero.age_unit }}{% endif %} · {{ t.hero.kicker_suffix }}</span>
+        </div>
+
+        <p class="hero__greeting" data-reveal><span class="mono-prompt">&gt;&gt;&gt;</span> {{ t.hero.greeting }}</p>
+        <h1 class="hero__name" data-reveal>
+          {% if name_head %}<span class="hero__name-head">{{ name_head }}</span>{% endif %}
+          <span class="hero__name-tail gradient-text">{{ name_tail }}</span>
+        </h1>
+        <p class="hero__role" data-reveal>
+          <span class="hero__role-title">{{ profile.role }}</span>
+          <span class="hero__role-sep" aria-hidden="true">/</span>
+          <span class="hero__role-stack">{{ profile.specialization }}</span>
+        </p>
+
+        <p class="hero__desc" data-reveal>{% tr profile "hero_description" %}</p>
+
+        <div class="hero__actions" data-reveal>
+          <a href="#projects" class="btn btn--primary btn--lg">{{ t.hero.view_projects }} {% icon "arrow-up-right" 16 %}</a>
+          {% if profile.cv_file %}
+          <a href="{{ profile.cv_file.url }}" class="btn btn--ghost btn--lg" download>{% icon "download" 16 %} {{ t.hero.download_cv }}</a>
+          {% else %}
+          <a href="#contacts" class="btn btn--ghost btn--lg">{{ t.hero.contact_me }}</a>
+          {% endif %}
+        </div>
+
+        <ul class="socials" data-reveal>
+          {% if profile.github_url %}<li><a href="{{ profile.github_url }}" target="_blank" rel="noopener noreferrer">{% icon "github" 16 %}<span>GitHub</span></a></li>{% endif %}
+          {% if profile.linkedin_url %}<li><a href="{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer">{% icon "linkedin" 16 %}<span>LinkedIn</span></a></li>{% endif %}
+          {% if profile.telegram_url %}<li><a href="{{ profile.telegram_url }}" target="_blank" rel="noopener noreferrer">{% icon "send" 16 %}<span>Telegram</span></a></li>{% endif %}
+          {% if profile.telegram_channel_url and profile.telegram_channel_url != profile.telegram_url %}<li><a href="{{ profile.telegram_channel_url }}" target="_blank" rel="noopener noreferrer">{% icon "radio" 16 %}<span>{{ t.hero.tg_channel }}</span></a></li>{% endif %}
+          {% if profile.instagram_url %}<li><a href="{{ profile.instagram_url }}" target="_blank" rel="noopener noreferrer">{% icon "instagram" 16 %}<span>Instagram</span></a></li>{% endif %}
+        </ul>
+      </div>
+
+      <div class="hero__visual" data-reveal>
+        <div class="showcase" id="showcase" data-shape="circle">
+          <div class="showcase__glow" aria-hidden="true"></div>
+          <div class="showcase__orbit" aria-hidden="true">
+            {% for badge in hero_badges %}<span class="orbit-badge orbit-badge--{{ forloop.counter }}"><span>{{ badge }}</span></span>{% endfor %}
+          </div>
+          <div class="showcase__frame" id="showcase-frame">
+            {% if profile.hero_video %}
+            <video class="showcase__media" id="hero-video" src="{{ profile.hero_video.url }}"{% if profile.hero_poster %} poster="{{ profile.hero_poster.url }}"{% endif %} autoplay muted loop playsinline preload="metadata" aria-label="{{ profile.full_name }} — showreel"></video>
+            {% endif %}
+            {% if profile.hero_poster %}
+            <img class="showcase__media showcase__fallback" src="{{ profile.hero_poster.url }}" alt="{{ profile.full_name }} — 3D showreel" {% if profile.hero_video %}hidden{% endif %} width="800" height="800">
+            {% elif not profile.hero_video %}
+            <div class="showcase__placeholder"><span>{{ profile.logo_short }}</span></div>
+            {% endif %}
+            <div class="showcase__scrim" aria-hidden="true"></div>
+
+            {% if profile.hero_video %}
+            <div class="showcase__controls">
+              <button type="button" class="ctrl" id="video-play" aria-label="{{ t.hero.pause }}" data-label-play="{{ t.hero.play }}" data-label-pause="{{ t.hero.pause }}">
+                <span class="ctrl__pause">{% icon "pause" 16 %}</span><span class="ctrl__play">{% icon "play" 16 %}</span>
+              </button>
+              <button type="button" class="ctrl ctrl--wide" id="video-mute" aria-pressed="false" data-label-on="{{ t.hero.sound_on }}" data-label-off="{{ t.hero.sound_off }}">
+                <span class="ctrl__muted">{% icon "volume-off" 15 %}</span><span class="ctrl__unmuted">{% icon "volume-on" 15 %}</span>
+                <span class="ctrl__label">{{ t.hero.sound_off }}</span>
+              </button>
+              <button type="button" class="ctrl" id="video-fullscreen" aria-label="{{ t.hero.fullscreen }}">{% icon "maximize" 16 %}</button>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if profile.hero_video or profile.hero_poster %}
+        <div class="showcase-toolbar">
+          <div class="segmented" role="group" aria-label="Video shape">
+            <button type="button" class="is-active" data-shape-btn="circle" aria-pressed="true">{% icon "circle" 14 %}<span>{{ t.hero.shape_circle }}</span></button>
+            <button type="button" data-shape-btn="wide" aria-pressed="false">{% icon "monitor" 14 %}<span>{{ t.hero.shape_wide }}</span></button>
+          </div>
+          <span class="showcase-toolbar__caption">{{ t.hero.video_caption }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if metrics %}
+    <dl class="metrics">
+      {% for metric in metrics %}
+      <div class="metric card" data-reveal style="--reveal-delay: {{ forloop.counter0 }}">
+        <dt class="metric__label">{% tr metric "label" %}</dt>
+        <dd class="metric__value"><span class="metric__number" data-count="{{ metric.value }}">{{ metric.value }}</span> <span class="metric__unit">{% tr metric "unit" %}</span></dd>
+      </div>
+      {% endfor %}
+    </dl>
+    {% endif %}
+  </div>
+
+  {% if profile.hero_video %}
+  <dialog class="lightbox" id="video-lightbox" aria-label="{{ profile.full_name }} — showreel">
+    <div class="lightbox__bar">
+      <span>{{ profile.full_name }} · {{ profile.role }} Showreel</span>
+      <button type="button" class="icon-btn" data-close-dialog aria-label="{{ t.hero.close }}">{% icon "x" 18 %}</button>
+    </div>
+    <video class="lightbox__video" id="lightbox-video" src="{{ profile.hero_video.url }}"{% if profile.hero_poster %} poster="{{ profile.hero_poster.url }}"{% endif %} controls loop playsinline preload="none"></video>
+  </dialog>
+  {% endif %}
+</section>

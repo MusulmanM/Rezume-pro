@@ -1,0 +1,32 @@
+{% load portfolio_tags %}
+<section class="section" id="about" data-section>
+  <div class="container">
+    {% include "portfolio/partials/section_head.html" with number=section_numbers.about label=t.about.label title=t.about.title subtitle=t.about.subtitle %}
+
+    {% if about_cards %}
+    <div class="about-grid">
+      {% for card in about_cards %}
+      <article class="about-card card card--interactive" data-reveal style="--reveal-delay: {{ forloop.counter0 }}">
+        <div class="about-card__top">
+          <span class="about-card__index">{{ forloop.counter|stringformat:"02d" }} · {% tr card "title" %}</span>
+          <span class="icon-tile">{% icon card.icon 18 %}</span>
+        </div>
+        <h3 class="about-card__lead">{% tr card "lead" %}</h3>
+        <p class="about-card__body">{% tr card "body" %}</p>
+        {% tr card "meta" as card_meta %}
+        {% if card_meta %}<p class="about-card__meta">{{ card_meta }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="code-window about-code" data-reveal>
+      <div class="code-window__bar">
+        <span class="code-window__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="code-window__file">{% icon "terminal" 14 %} developer_profile.py</span>
+        <span class="code-window__meta">Python 3.12 · UTF-8</span>
+      </div>
+      <pre class="code"><code>{{ developer_code }}</code></pre>
+    </div>
+  </div>
+</section>

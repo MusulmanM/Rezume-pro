@@ -1,0 +1,108 @@
+{% load portfolio_tags %}
+<section class="section section--contact" id="contacts" data-section>
+  <div class="container">
+    {% include "portfolio/partials/section_head.html" with number=section_numbers.contacts label=t.contacts.label title=t.contacts.title subtitle=t.contacts.subtitle %}
+
+    <div class="contact-grid">
+      {% if profile.phone_display %}
+      <div class="contact-card card card--interactive" data-reveal style="--reveal-delay: 0">
+        <div class="contact-card__top"><span class="contact-card__title">{{ t.contacts.phone.title }}</span><span class="icon-tile">{% icon "phone" 16 %}</span></div>
+        <p class="contact-card__value mono">{{ profile.phone_display }}</p>
+        <p class="contact-card__hint">{{ t.contacts.phone.hint }}</p>
+        <div class="contact-card__actions">
+          <a href="tel:{{ profile.phone_raw|default:profile.phone_display }}" class="link-btn">{{ t.contacts.phone.action }} {% icon "arrow-right" 14 %}</a>
+          <button type="button" class="icon-btn icon-btn--sm" data-copy="{{ profile.phone_display }}" aria-label="{{ t.contacts.copy }}: {{ t.contacts.phone.title }}">{% icon "copy" 14 %}</button>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="contact-card card card--interactive" data-reveal style="--reveal-delay: 1">
+        <div class="contact-card__top"><span class="contact-card__title">{{ t.contacts.email.title }}</span><span class="icon-tile">{% icon "mail" 16 %}</span></div>
+        <p class="contact-card__value mono contact-card__value--break">{{ profile.email }}</p>
+        <p class="contact-card__hint">{{ t.contacts.email.hint }}</p>
+        <div class="contact-card__actions">
+          <a href="mailto:{{ profile.email }}" class="link-btn">{{ t.contacts.email.action }} {% icon "arrow-right" 14 %}</a>
+          <button type="button" class="icon-btn icon-btn--sm" data-copy="{{ profile.email }}" aria-label="{{ t.contacts.copy }}: Email">{% icon "copy" 14 %}</button>
+        </div>
+      </div>
+
+      {% if profile.telegram_url %}
+      <div class="contact-card card card--interactive" data-reveal style="--reveal-delay: 2">
+        <div class="contact-card__top"><span class="contact-card__title">{{ t.contacts.telegram.title }}</span><span class="icon-tile">{% icon "send" 16 %}</span></div>
+        <p class="contact-card__value mono">{{ profile.telegram_handle|default:"Telegram" }}</p>
+        <p class="contact-card__hint">{{ t.contacts.telegram.hint }}</p>
+        <div class="contact-card__actions">
+          <a href="{{ profile.telegram_url }}" class="link-btn" target="_blank" rel="noopener noreferrer">{{ t.contacts.telegram.action }} {% icon "arrow-right" 14 %}</a>
+          {% if profile.telegram_handle %}<button type="button" class="icon-btn icon-btn--sm" data-copy="{{ profile.telegram_handle }}" aria-label="{{ t.contacts.copy }}: Telegram">{% icon "copy" 14 %}</button>{% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="contact-card card card--interactive" data-reveal style="--reveal-delay: 3">
+        {% tr profile "city" as city %}
+        <div class="contact-card__top"><span class="contact-card__title">{{ t.contacts.city.title }}</span><span class="icon-tile">{% icon "map-pin" 16 %}</span></div>
+        <p class="contact-card__value">{{ city }}</p>
+        <p class="contact-card__hint">{{ t.contacts.city.hint }}</p>
+        <div class="contact-card__actions">
+          <button type="button" class="link-btn" data-copy="{{ city }}">{{ t.contacts.city.action }} {% icon "copy" 14 %}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-card card" data-reveal>
+      <div class="contact-form-card__intro">
+        <h3 class="contact-form-card__title">{{ t.contacts.form.title }}</h3>
+        <p class="contact-form-card__subtitle">{{ t.contacts.form.subtitle }}</p>
+        <p class="contact-form-card__privacy">{% icon "shield" 14 %} {{ t.contacts.form.privacy }}</p>
+      </div>
+
+      <form class="contact-form" id="contact-form" method="post" action="{% url 'contact' %}" novalidate
+            data-msg-sending="{{ t.contacts.form.sending }}" data-msg-error="{{ t.contacts.form.error }}">
+        {% csrf_token %}
+        <input type="hidden" name="lang" value="{{ lang }}">
+        <div class="hp-field" aria-hidden="true">
+          <label for="cf-website">Website</label>
+          <input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="cf-name">{{ t.contacts.form.name }}</label>
+          <input class="field__input" type="text" id="cf-name" name="name" maxlength="120" required autocomplete="name" placeholder="{{ t.contacts.form.name }}">
+          <p class="field__error" data-error-for="name" hidden></p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="cf-contact">{{ t.contacts.form.contact }}</label>
+          <input class="field__input" type="text" id="cf-contact" name="contact" maxlength="150" required autocomplete="email" placeholder="@username / name@mail.com">
+          <p class="field__error" data-error-for="contact" hidden></p>
+        </div>
+        <div class="field field--full">
+          <label class="field__label" for="cf-message">{{ t.contacts.form.message }}</label>
+          <textarea class="field__input field__input--area" id="cf-message" name="message" rows="5" maxlength="3000" minlength="10" required placeholder="{{ t.contacts.form.message }}"></textarea>
+          <p class="field__error" data-error-for="message" hidden></p>
+        </div>
+
+        <div class="contact-form__footer field--full">
+          <button type="submit" class="btn btn--primary btn--lg contact-form__submit">
+            <span class="btn__spinner" aria-hidden="true">{% icon "loader" 16 %}</span>
+            <span class="btn__icon">{% icon "send" 16 %}</span>
+            <span class="btn__label">{{ t.contacts.form.submit }}</span>
+          </button>
+          {% if profile.telegram_url %}
+          <a href="{{ profile.telegram_url }}" class="link-btn" target="_blank" rel="noopener noreferrer">{{ profile.telegram_handle|default:"Telegram" }} {% icon "arrow-up-right" 14 %}</a>
+          {% endif %}
+        </div>
+
+        {% if messages %}
+          {% for message in messages %}
+          <div class="form-status form-status--{% if message.tags == 'success' %}success{% else %}error{% endif %} field--full" role="status">
+            {% if message.tags == 'success' %}{% icon "check" 16 %}{% else %}{% icon "alert" 16 %}{% endif %}<span>{{ message }}</span>
+          </div>
+          {% endfor %}
+        {% endif %}
+        <div class="form-status field--full" id="form-status" role="status" aria-live="polite" hidden>
+          <span class="form-status__ok">{% icon "check" 16 %}</span><span class="form-status__err">{% icon "alert" 16 %}</span><span class="form-status__text"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

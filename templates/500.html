@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}500 — {{ t.errors.500_title }}{% endblock %}
+{% block body_class %}error-page{% endblock %}
+{% block body %}
+<main id="main" class="error-screen">
+  <div class="error-screen__card">
+    <p class="error-screen__code mono">HTTP 500</p>
+    <h1 class="error-screen__title">{{ t.errors.500_title }}</h1>
+    <p class="error-screen__text">{{ t.errors.500_text }}</p>
+    <a href="{{ home }}" class="btn btn--primary">{{ t.errors.home }}</a>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% load portfolio_tags %}
+<section class="section section--alt" id="skills" data-section>
+  <div class="container">
+    <div class="section-head-row">
+      {% include "portfolio/partials/section_head.html" with number=section_numbers.skills label=t.skills.label title=t.skills.title subtitle=t.skills.subtitle %}
+
+      {% if skill_categories|length > 1 %}
+      <div class="filter-tabs" role="group" aria-label="{{ t.skills.label }}" data-reveal>
+        <button type="button" class="is-active" data-filter="all" aria-pressed="true">{{ t.skills.filters.all }}</button>
+        {% for category in skill_categories %}
+        <button type="button" data-filter="{{ category }}" aria-pressed="false">{% if category == 'backend' %}{{ t.skills.filters.backend }}{% elif category == 'database' %}{{ t.skills.filters.database }}{% else %}{{ t.skills.filters.devops }}{% endif %}</button>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    {% if skills %}
+    <div class="skills-layout">
+      <div class="skill-chips" role="tablist" aria-label="{{ t.skills.title }}" aria-orientation="vertical" data-reveal>
+        {% for skill in skills %}
+        <button type="button" class="skill-chip{% if forloop.first %} is-active{% endif %}" role="tab" id="skill-tab-{{ skill.slug }}" aria-controls="skill-panel-{{ skill.slug }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" tabindex="{% if forloop.first %}0{% else %}-1{% endif %}" data-skill="{{ skill.slug }}" data-category="{{ skill.category }}">
+          {% icon "code" 15 %}<span>{{ skill.name }}</span>
+        </button>
+        {% endfor %}
+      </div>
+
+      <div class="skill-panels" data-reveal>
+        {% for skill in skills %}
+        <div class="skill-panel card" role="tabpanel" id="skill-panel-{{ skill.slug }}" aria-labelledby="skill-tab-{{ skill.slug }}" {% if not forloop.first %}hidden{% endif %}>
+          <div class="skill-panel__head">
+            <div>
+              <p class="skill-panel__kicker">{{ t.skills.selected }}{% if skill.level %} · {{ skill.level }}{% endif %}</p>
+              <h3 class="skill-panel__title">{{ skill.name }}</h3>
+            </div>
+            <span class="skill-panel__count mono">{{ forloop.counter|stringformat:"02d" }}/{{ skills|length|stringformat:"02d" }}</span>
+          </div>
+          <p class="skill-panel__text">{% tr skill "experience" %}</p>
+          {% if skill.snippet %}
+          <div class="code-window">
+            <div class="code-window__bar">
+              <span class="code-window__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="code-window__file">{{ t.skills.code_example }} · {{ skill.get_snippet_language_display }}</span>
+              <button type="button" class="copy-btn" data-copy-target="#snippet-{{ skill.slug }}" data-copied-label="{{ t.skills.copied }}">
+                {% icon "copy" 14 %}<span>{{ t.skills.copy }}</span>
+              </button>
+            </div>
+            <pre class="code"><code>{{ skill.snippet|highlighted:skill.snippet_language }}</code></pre>
+            <textarea id="snippet-{{ skill.slug }}" hidden readonly>{{ skill.snippet }}</textarea>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>

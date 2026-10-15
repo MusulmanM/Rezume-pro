@@ -1,0 +1,57 @@
+{% load portfolio_tags %}
+{% for project in projects %}
+<dialog class="modal accent-{{ project.accent }}" id="project-{{ project.slug }}" aria-labelledby="project-{{ project.slug }}-title">
+  <div class="modal__bar">
+    <span class="modal__kicker">{{ forloop.counter|stringformat:"02d" }} · {{ t.projects.case_study }}{% if project.year %} <span class="muted">· {{ project.year }}</span>{% endif %}</span>
+    <button type="button" class="icon-btn" data-close-dialog aria-label="{{ t.hero.close }}">{% icon "x" 18 %}</button>
+  </div>
+
+  <div class="modal__body">
+    <div class="modal__media">
+      {% if project.image %}
+      <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy" decoding="async" width="1600" height="1000">
+      {% else %}
+      <span class="project-card__placeholder">{% icon "terminal" 36 %}<span>{{ project.title }}</span></span>
+      {% endif %}
+      {% if project.metrics %}<span class="modal__metrics">{{ project.metrics }}</span>{% endif %}
+    </div>
+
+    <div>
+      <h3 class="modal__title" id="project-{{ project.slug }}-title">{{ project.title }}</h3>
+      <p class="modal__subtitle">{% tr project "subtitle" %}</p>
+      <p class="modal__text">{% tr project "description" %}</p>
+    </div>
+
+    {% tr project "architecture" as architecture %}
+    {% if architecture %}
+    <div class="insight">
+      <p class="insight__label">{% icon "layers" 14 %} {{ t.projects.architecture }}</p>
+      <p class="insight__text">{{ architecture }}</p>
+    </div>
+    {% endif %}
+
+    {% if project.code_preview %}
+    <div class="code-window">
+      <div class="code-window__bar">
+        <span class="code-window__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="code-window__file">{{ project.code_filename }}</span>
+        <button type="button" class="copy-btn" data-copy-target="#project-code-{{ project.slug }}" data-copied-label="{{ t.skills.copied }}">
+          {% icon "copy" 14 %}<span>{{ t.skills.copy }}</span>
+        </button>
+      </div>
+      <pre class="code"><code>{{ project.code_preview|highlighted:project.code_language }}</code></pre>
+      <textarea id="project-code-{{ project.slug }}" hidden readonly>{{ project.code_preview }}</textarea>
+    </div>
+    {% endif %}
+
+    <div class="modal__footer">
+      {% if project.tag_list %}<ul class="tag-line">{% for tag in project.tag_list %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
+      <div class="modal__actions">
+        {% if project.github_url %}<a href="{{ project.github_url }}" class="btn btn--ghost btn--sm" target="_blank" rel="noopener noreferrer">{% icon "github" 14 %} GitHub</a>{% endif %}
+        {% if project.demo_url %}<a href="{{ project.demo_url }}" class="btn btn--ghost btn--sm" target="_blank" rel="noopener noreferrer">{% icon "external-link" 14 %} {{ t.projects.demo }}</a>{% endif %}
+        <a href="#contacts" class="btn btn--primary btn--sm" data-close-dialog>{% icon "send" 14 %} {{ t.projects.discuss }}</a>
+      </div>
+    </div>
+  </div>
+</dialog>
+{% endfor %}

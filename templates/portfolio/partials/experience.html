@@ -1,0 +1,24 @@
+{% load portfolio_tags %}
+<section class="section" id="experience" data-section>
+  <div class="container">
+    {% include "portfolio/partials/section_head.html" with number=section_numbers.experience label=t.experience.label title=t.experience.title subtitle=t.experience.subtitle %}
+
+    <ol class="timeline">
+      {% for item in timeline %}
+      <li class="timeline__item" data-reveal>
+        <span class="timeline__node">{% if item.kind == 'education' %}{% icon "graduation" 16 %}{% else %}{% icon "briefcase" 16 %}{% endif %}</span>
+        <div class="timeline__card card">
+          <div class="timeline__head">
+            <span class="timeline__kind mono">{% if item.kind == 'education' %}{{ t.experience.education }}{% else %}{{ t.experience.work }}{% endif %}</span>
+            <span class="timeline__period mono">{{ item.period }}</span>
+          </div>
+          <h3 class="timeline__title">{% tr item "title" %}</h3>
+          <p class="timeline__org">{{ item.organization }}</p>
+          {% tr item "description" as description %}
+          {% if description %}<p class="timeline__desc">{{ description|linebreaksbr }}</p>{% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
